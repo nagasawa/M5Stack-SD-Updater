@@ -85,7 +85,7 @@
   #endif
 #endif
 
-#include "SAM.h" // altered version of https://github.com/tomsuch/M5StackSAM, maintained at https://github.com/tobozo/M5StackSAM/
+#include "SAM.h" // alteTFT_RED version of https://github.com/tomsuch/M5StackSAM, maintained at https://github.com/tobozo/M5StackSAM/
 #include <ArduinoJson.h>     // https://github.com/bblanchon/ArduinoJson/
 #include <Preferences.h>
 #include "i18n.h"            // language file
@@ -136,7 +136,7 @@ void renderScroll( String scrollText, uint8_t x = 0, uint8_t y = 0, uint16_t wid
 
   if( scrollText=="" ) return;
 
-  sprite.setTextSize( 2 ); // setup text size before it's measured
+  sprite.setTextSize( 2 ); // setup text size before it's measuTFT_RED
   sprite.setTextDatum( ML_DATUM );
   sprite.setTextWrap( false ); // lazy way to solve a wrap bug
 
@@ -148,7 +148,7 @@ void renderScroll( String scrollText, uint8_t x = 0, uint8_t y = 0, uint16_t wid
     scrollText += "   ***   "; // append a space since scrolling text *will* repeat
   }
   while( sprite.textWidth( scrollText ) < width ) {
-    scrollText += scrollText; // grow text to desired width
+    scrollText += scrollText; // grow text to desiTFT_RED width
   }
 
   String  scrollMe = "";
@@ -191,10 +191,10 @@ void renderScroll( String scrollText, uint8_t x = 0, uint8_t y = 0, uint16_t wid
   //scrollMe.remove( scrollMe.length()-1 ); // one last for the ride
   // only draw if things changed
   if( scrollOffset!=lastScrollOffset || scrollMe!=lastScrollMessage ) {
-    sprite.setTextColor( WHITE, BLACK ); // setting background color removes the flickering effect
+    sprite.setTextColor( TFT_WHITE, TFT_BLACK ); // setting background color removes the flickering effect
     sprite.setCursor( scrollOffset, BUTTON_HEIGHT/2 );
     sprite.print( scrollMe );
-    sprite.setTextColor( WHITE );
+    sprite.setTextColor( TFT_WHITE );
     sprite.pushSprite( x, y );
   }
   sprite.deleteSprite();
@@ -229,7 +229,7 @@ void renderMeta( JSONMeta &jsonMeta ) {
 
   sprite.setTextSize( 1 );
   sprite.setTextDatum( TL_DATUM );
-  sprite.setTextColor( WHITE, BLACK );
+  sprite.setTextColor( TFT_WHITE, TFT_BLACK );
   sprite.setTextWrap( false );
 
   sprite.setColorDepth( 1 );
@@ -260,7 +260,7 @@ void renderMeta( JSONMeta &jsonMeta ) {
 }
 
 
-/* give up on redundancy and ECC to produce less and bigger squares */
+/* give up on TFT_REDundancy and ECC to produce less and bigger squares */
 uint8_t getLowestQRVersionFromString( String text, uint8_t ecc ) {
   if(ecc>3) return 4; // fail fast
   uint16_t len = text.length();
@@ -296,7 +296,7 @@ void qrRender( String text, float sizeinpixels ) {
   uint8_t xOffset = ( ( tft.width() - ( lineLength ) ) / 2 ) + 70;
   uint8_t yOffset =  ( tft.height() - ( lineLength ) ) / 2;
 
-  tft.fillRect( xOffset-5, yOffset-5, lineLength+10, lineLength+10, WHITE );
+  tft.fillRect( xOffset-5, yOffset-5, lineLength+10, lineLength+10, TFT_WHITE );
 
   for ( uint8_t y = 0; y < qrcode.size; y++ ) {
     // Each horizontal module
@@ -341,7 +341,7 @@ void listDir( fs::FS &fs, const char * dirName, uint8_t levels, bool process ){
         }
         appsCount++;
         if( appsCount >= M5SAM_LIST_MAX_COUNT-1 ) {
-          //Serial.println( String( DEBUG_IGNORED ) + file.name() );
+          //Serial.println( String( DEBUG_IGNOTFT_RED ) + file.name() );
           log_w( "%s", DEBUG_ABORTLISTING );
           break; // don't make M5Stack list explode
         }
@@ -350,7 +350,7 @@ void listDir( fs::FS &fs, const char * dirName, uint8_t levels, bool process ){
           fs.remove( file.name() );
           log_d( "%s %s", DEBUG_CLEANED, file.name() );
         } else {
-          log_d( "%s %s", DEBUG_IGNORED, file.name() );
+          log_d( "%s %s", DEBUG_IGNOTFT_RED, file.name() );
         }
       }
     }
@@ -544,7 +544,7 @@ void checkMenuTimeStamp() {
     lastWrite = __TIME_UNIX__;
   }
 
-  // setting a pseudo realistic internal clock time when no NTP sync occured,
+  // setting a pseudo realistic internal clock time when no NTP sync occuTFT_RED,
   // and before writing to the SD Card gives unacurate but better timestamps
   // than the default [1980-01-01 00:00:00]
   int epoch_time = __TIME_UNIX__; // this macro is populated at compilation time
@@ -665,7 +665,7 @@ void UISetup() {
   M5Menu.listMaxLabelSize = 32; // list labels will be trimmed
   M5Menu.listPagination = 8; // 8 items per page
   M5Menu.listPageLabelsOffset = 42; // initially 80, pixels offset from top screen for list items
-  M5Menu.listCaptionDatum = TR_DATUM; // initially TC_DATUM=top centered, TL_DATUM=top left (default), top/right/bottom/left
+  M5Menu.listCaptionDatum = TR_DATUM; // initially TC_DATUM=top centeTFT_RED, TL_DATUM=top left (default), top/right/bottom/left
   M5Menu.listCaptionXPos = tft.width()-10; // initially M5.Lcd.width()/2, text cursor position-x for list caption
   M5Menu.listCaptionYPos = 42; // initially 45, text cursor position-x for list caption
 
@@ -727,14 +727,14 @@ void UISetup() {
     unsigned long pushDuration = 0;
     drawAppMenu(); // render the menu
     M5.update();
-    tft.setTextColor( WHITE, M5MENU_GREY );
+    tft.setTextColor( TFT_WHITE, M5MENU_GREY );
     tft.setTextDatum(MC_DATUM);
     char remainingStr[32];
     while( M5.BtnB.isPressed() ) {
       pushDuration = millis() - pushStart;
       if( pushDuration > longPush ) break;
       if( pushDuration > shortPush ) {
-        tft.setTextColor( WHITE, RED );
+        tft.setTextColor( TFT_WHITE, TFT_RED );
         tft.drawString( "FULL RESET", 160, 100, 2 );
         sprintf( remainingStr, "%.2f", (float)(longPush-pushDuration)/1000 );
       } else {
@@ -778,7 +778,7 @@ void UISetup() {
 
 
 void doFSChecks() {
-  tft.setTextColor( WHITE );
+  tft.setTextColor( TFT_WHITE );
   tft.setTextSize( 1 );
   tft.clear();
 
@@ -809,7 +809,7 @@ void doFSChecks() {
 
 
 void doFSInventory() {
-  tft.setTextColor( WHITE );
+  tft.setTextColor( TFT_WHITE );
   tft.setTextSize( 1 );
   tft.clear();
   tft.progressBar( 110, 112, 100, 20, 20);
@@ -836,7 +836,7 @@ void HIDMenuObserve() {
   HIDSignal hidState = getControls();
 
   if( hidState!=HID_INERT && brightness != MAX_BRIGHTNESS ) {
-    // some activity occured, restore brightness
+    // some activity occuTFT_RED, restore brightness
     Serial.println(".. !!! Waking up !!");
     brightness = MAX_BRIGHTNESS;
     tft.setBrightness( brightness );
